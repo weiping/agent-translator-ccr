@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-07-07
+### Added
+- Integrated with the Anthropic AI SDK to connect with a Large Language Model.
+- Implemented a utility for creating and managing the language model instance.
+- Added loading, success, and error states to the status bar.
+- Set up environment variable handling with `.env` and `dotenv`.
+
 ## [0.1.0] - 2025-07-07
 ### Added
 - Basic chat interface with welcome message, message history, input field, and status bar.

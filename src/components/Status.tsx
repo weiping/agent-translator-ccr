@@ -6,9 +6,18 @@ interface StatusProps {
 }
 
 export const Status: React.FC<StatusProps> = ({ message }) => {
+    let color = 'white';
+    if (message.startsWith('AI is thinking...')) {
+        color = 'yellow';
+    } else if (message.startsWith('Error:')) {
+        color = 'red';
+    } else if (message === 'Ready.') {
+        color = 'green';
+    }
+
     return (
         <Box>
-            <Text>{message}</Text>
+            <Text color={color}>{message}</Text>
         </Box>
     );
 };

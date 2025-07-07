@@ -4,6 +4,8 @@ import { Welcome } from './Welcome.js';
 import { History } from './History.js';
 import { Input } from './Input.js';
 import { Status } from './Status.js';
+import { getLanguageModel } from '../utils/llm.js';
+import { generateText, CoreMessage } from 'ai';
 
 interface Message {
     id: string;
@@ -23,14 +25,27 @@ export const Chat = () => {
         }
     }, [isRawModeSupported]);
 
-    const handleSubmit = (text: string) => {
+    const handleSubmit = async (text: string) => {
         const newUserMessage: Message = { id: `msg-${messageCounter.current++}`, role: 'user', content: text };
-        setMessages(prev => [...prev, newUserMessage]);
+        const newMessages = [...messages, newUserMessage];
+        setMessages(newMessages);
+        setStatus('AI is thinking...');
 
-        setTimeout(() => {
-            const newAiMessage: Message = { id: `msg-${messageCounter.current++}`, role: 'assistant', content: `You said: "${text}"` };
+        try {
+            const history: CoreMessage[] = newMessages.map(({ role, content }) => ({ role, content }));
+            const result = await generateText({
+                model: getLanguageModel(),
+                system: 'You are a helpful chatbot.',
+                temperature: 0.1,
+                messages: history,
+            });
+
+            const newAiMessage: Message = { id: `msg-${messageCounter.current++}`, role: 'assistant', content: result.text };
             setMessages(prev => [...prev, newAiMessage]);
-        }, 500);
+            setStatus('Ready.');
+        } catch (error) {
+            setStatus(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
     };
 
     return (
