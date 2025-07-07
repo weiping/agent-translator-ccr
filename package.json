@@ -1,6 +1,6 @@
 {
   "name": "agent-translator-ccr",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/cli.js",
   "bin": {
@@ -24,6 +24,8 @@
   "dependencies": {
     "ai": "^4.3.16",
     "ink": "^6.0.1",
+    "ink-big-text": "^2.0.0",
+    "ink-text-input": "^6.0.0",
     "react": "^19.1.0",
     "zod-to-json-schema": "^3.24.6"
   }
