@@ -7,7 +7,7 @@ interface StatusProps {
 
 export const Status: React.FC<StatusProps> = ({ message }) => {
     let color = 'white';
-    if (message.startsWith('AI is thinking...')) {
+    if (message.startsWith('AI is thinking...') || message.startsWith('Calling tool:')) {
         color = 'yellow';
     } else if (message.startsWith('Error:')) {
         color = 'red';

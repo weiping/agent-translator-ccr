@@ -5,7 +5,7 @@ import { History } from './History.js';
 import { Input } from './Input.js';
 import { Status } from './Status.js';
 import { getLanguageModel } from '../utils/llm.js';
-import { generateText, CoreMessage } from 'ai';
+import { streamText, CoreMessage } from 'ai';
 import { readFileTool } from '../tools/readFile.js';
 import { fetchUrlTool } from '../tools/fetchUrl.js';
 
@@ -39,7 +39,7 @@ export const Chat = () => {
                 .filter((msg): msg is Message & { role: 'user' | 'assistant' } => msg.role === 'user' || msg.role === 'assistant')
                 .map(({ role, content }) => ({ role, content }));
 
-            const result = await generateText({
+            const result = await streamText({
                 model: getLanguageModel(),
                 system: 'You are a helpful chatbot. You can use tools to access local files and web pages.',
                 temperature: 0.1,
@@ -48,23 +48,32 @@ export const Chat = () => {
                     readFile: readFileTool,
                     fetchUrl: fetchUrlTool,
                 },
-                maxSteps: 5,
             });
 
-            let messagesToAdd: Message[] = [];
-            if (result.toolResults && result.toolResults.length > 0) {
-                const toolMessages: Message[] = result.toolResults.map(toolResult => ({
-                    id: `msg-${messageCounter.current++}`,
-                    role: 'tool',
-                    content: `Tool '${toolResult.toolName}' Result: ${JSON.stringify(toolResult.result)}`,
-                }));
-                messagesToAdd.push(...toolMessages);
+            let fullResponse = '';
+            let toolMessages: Message[] = [];
+            
+            for await (const delta of result.fullStream) {
+                if (delta.type === 'text-delta') {
+                    fullResponse += delta.textDelta;
+                } else if (delta.type === 'tool-call') {
+                    setStatus(`Calling tool: ${delta.toolName} with args: ${JSON.stringify(delta.args)}`);
+                } else if (delta.type === 'tool-result') {
+                    const toolMessage: Message = {
+                        id: `msg-${messageCounter.current++}`,
+                        role: 'tool',
+                        content: `Tool '${delta.toolName}' Result: ${JSON.stringify(delta.result)}`,
+                    };
+                    toolMessages.push(toolMessage);
+                }
             }
-
-            const newAiMessage: Message = { id: `msg-${messageCounter.current++}`, role: 'assistant', content: result.text };
-            messagesToAdd.push(newAiMessage);
-
-            setMessages(prev => [...prev, ...messagesToAdd]);
+            
+            setMessages(prev => [...prev, ...toolMessages]);
+            
+            if (fullResponse) {
+                const newAiMessage: Message = { id: `msg-${messageCounter.current++}`, role: 'assistant', content: fullResponse };
+                setMessages(prev => [...prev, newAiMessage]);
+            }
 
             setStatus('Ready.');
         } catch (error) {

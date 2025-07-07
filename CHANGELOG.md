@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2025-07-07
+### Added
+- Implemented real-time status updates for tool calls using `streamText`.
+- The UI now shows when a tool is being called and with what arguments.
+
+### Fixed
+- Corrected the API usage for handling tool calls to resolve build errors.
+- Resolved a persistent build error by correctly preparing the message history for the AI SDK.
+
 ## [0.3.1] - 2025-07-07
 ### Fixed
 - Resolved a bug that caused the `npm run dev` command to fail due to an incorrect import syntax for the `cheerio` library.
