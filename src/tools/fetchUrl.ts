@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { tool } from 'ai';
 import TurndownService from 'turndown';
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 
 const turndownService = new TurndownService();
 

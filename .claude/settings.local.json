@@ -22,7 +22,8 @@
       "Bash(npm install zod turndown cheerio @types/turndown @types/cheerio)",
       "Bash(mkdir src/tools)",
       "Bash(npm run dev -- \"read the file README.md\")",
-      "Bash(git commit -m \"feat: Implement tool support for v0.3\n\nThis commit adds the ability for the Translator Agent to use tools. It introduces two new tools: one for reading local files and another for fetching web content. The chat component has been updated to handle tool calls, and the AI''s system prompt has been enhanced to make it aware of its new capabilities.\n\nThis commit also includes fixes for several build errors related to module imports and TypeScript types.\n\nOriginal prompt: # v0.3 需求：支持工具\")"
+      "Bash(git commit -m \"feat: Implement tool support for v0.3\n\nThis commit adds the ability for the Translator Agent to use tools. It introduces two new tools: one for reading local files and another for fetching web content. The chat component has been updated to handle tool calls, and the AI''s system prompt has been enhanced to make it aware of its new capabilities.\n\nThis commit also includes fixes for several build errors related to module imports and TypeScript types.\n\nOriginal prompt: # v0.3 需求：支持工具\")",
+      "Bash(git commit -m \"fix: Resolve cheerio import error in dev mode\n\nThis commit fixes a bug that caused the `npm run dev` command to fail due to an incorrect import syntax for the `cheerio` library.\n\nThis patch release ensures that the development environment runs smoothly.\")"
     ],
     "deny": []
   }

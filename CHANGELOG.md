@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2025-07-07
+### Fixed
+- Resolved a bug that caused the `npm run dev` command to fail due to an incorrect import syntax for the `cheerio` library.
+
 ## [0.3.0] - 2025-07-07
 ### Added
 - Implemented tool support for reading local files and fetching web content.
