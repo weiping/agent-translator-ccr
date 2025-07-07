@@ -12,6 +12,7 @@ This project is a command-line interface (CLI) translation tool built with Node.
 -   **UI**: React + Ink
 -   **AI**: Anthropic AI SDK
 -   **Runtime**: Node.js v20+
+-   **Web Scraping**: `cheerio`, `turndown`
 
 ## Project Structure
 
@@ -19,6 +20,7 @@ This project is a command-line interface (CLI) translation tool built with Node.
 -   `src/app.tsx`: The root React component.
 -   `src/components/`: Contains all the React components for the UI.
 -   `src/hooks/`: Contains custom React hooks.
+-   `src/tools/`: Contains tool definitions for use with the AI SDK.
 -   `src/utils/`: Contains utility functions.
 
 ## Development
