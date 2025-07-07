@@ -6,10 +6,12 @@ import { Input } from './Input.js';
 import { Status } from './Status.js';
 import { getLanguageModel } from '../utils/llm.js';
 import { generateText, CoreMessage } from 'ai';
+import { readFileTool } from '../tools/readFile.js';
+import { fetchUrlTool } from '../tools/fetchUrl.js';
 
 interface Message {
     id: string;
-    role: 'user' | 'assistant';
+    role: 'user' | 'assistant' | 'tool';
     content: string;
 }
 
@@ -27,21 +29,43 @@ export const Chat = () => {
 
     const handleSubmit = async (text: string) => {
         const newUserMessage: Message = { id: `msg-${messageCounter.current++}`, role: 'user', content: text };
-        const newMessages = [...messages, newUserMessage];
-        setMessages(newMessages);
+        
+        const updatedMessages = [...messages, newUserMessage];
+        setMessages(updatedMessages);
         setStatus('AI is thinking...');
 
         try {
-            const history: CoreMessage[] = newMessages.map(({ role, content }) => ({ role, content }));
+            const historyForSDK: CoreMessage[] = updatedMessages
+                .filter((msg): msg is Message & { role: 'user' | 'assistant' } => msg.role === 'user' || msg.role === 'assistant')
+                .map(({ role, content }) => ({ role, content }));
+
             const result = await generateText({
                 model: getLanguageModel(),
-                system: 'You are a helpful chatbot.',
+                system: 'You are a helpful chatbot. You can use tools to access local files and web pages.',
                 temperature: 0.1,
-                messages: history,
+                messages: historyForSDK,
+                tools: {
+                    readFile: readFileTool,
+                    fetchUrl: fetchUrlTool,
+                },
+                maxSteps: 5,
             });
 
+            let messagesToAdd: Message[] = [];
+            if (result.toolResults && result.toolResults.length > 0) {
+                const toolMessages: Message[] = result.toolResults.map(toolResult => ({
+                    id: `msg-${messageCounter.current++}`,
+                    role: 'tool',
+                    content: `Tool '${toolResult.toolName}' Result: ${JSON.stringify(toolResult.result)}`,
+                }));
+                messagesToAdd.push(...toolMessages);
+            }
+
             const newAiMessage: Message = { id: `msg-${messageCounter.current++}`, role: 'assistant', content: result.text };
-            setMessages(prev => [...prev, newAiMessage]);
+            messagesToAdd.push(newAiMessage);
+
+            setMessages(prev => [...prev, ...messagesToAdd]);
+
             setStatus('Ready.');
         } catch (error) {
             setStatus(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);

@@ -16,7 +16,13 @@
       "Bash(npm install ink-text-input)",
       "Bash(git commit -m \"feat: Implement basic chat interface for v0.1\n\nAdds a basic chat interface to the Translator Agent, including a welcome message, message history, an input field, and a status bar. The interface is built with React and Ink, and includes state management for the chat history.\n\nThis commit also includes fixes for a React key warning and handles terminal environments that do not support raw mode.\n\nOriginal prompt: # v0.1 需求\n请帮我实现一个基础的 cli 程序，名称是 Translator Agent。类似于 Chatbot，能输入消息，显示消息历史\n运行环境：Nodejs v20+\n技术栈：TypeScript + React + ink\n\nUI 要求：\n- 启动后顶部显示欢迎消息\n- 中间显示消息历史\n- 底部有一个输入框可以输入消息，输入消息后提交消息清空输入框，显示输入的消息在消息历史中\n- 消息框下面有一行文字显示错误信息、状态等\n\n确保能作为一个 cli 程序正常运行，正常运行后，更新版本号、Changelog，提交commit\")",
       "Bash(npm install @ai-sdk/openai dotenv)",
-      "Bash(git commit -m \"feat: Implement LLM interaction for v0.2\n\nThis commit integrates the Translator Agent with a Large Language Model using the AI SDK. It includes a new LLM utility, handles API keys via .env, and updates the chat component to show loading, success, and error states.\n\nOriginal prompt: # v0.2 需求，实现一个和 LLM 联通的 Chatbot cli\n\n请基于当前 v0.1 版本，实现 LLM 交互的功能：\n\n- 使用 `ai` 和 `@ai-sdk/openai`，并生成访问LLM的util代码，方便共用\n- 当用户输入消息后，提交LLM，返回消息后更新消息列表\n- 和 LLM 交互时显示 loading、成功、失败 状态\")"
+      "Bash(git commit -m \"feat: Implement LLM interaction for v0.2\n\nThis commit integrates the Translator Agent with a Large Language Model using the AI SDK. It includes a new LLM utility, handles API keys via .env, and updates the chat component to show loading, success, and error states.\n\nOriginal prompt: # v0.2 需求，实现一个和 LLM 联通的 Chatbot cli\n\n请基于当前 v0.1 版本，实现 LLM 交互的功能：\n\n- 使用 `ai` 和 `@ai-sdk/openai`，并生成访问LLM的util代码，方便共用\n- 当用户输入消息后，提交LLM，返回消息后更新消息列表\n- 和 LLM 交互时显示 loading、成功、失败 状态\")",
+      "Bash(npm run build)",
+      "Bash(npm install --save-dev @types/node)",
+      "Bash(npm install zod turndown cheerio @types/turndown @types/cheerio)",
+      "Bash(mkdir src/tools)",
+      "Bash(npm run dev -- \"read the file README.md\")",
+      "Bash(git commit -m \"feat: Implement tool support for v0.3\n\nThis commit adds the ability for the Translator Agent to use tools. It introduces two new tools: one for reading local files and another for fetching web content. The chat component has been updated to handle tool calls, and the AI''s system prompt has been enhanced to make it aware of its new capabilities.\n\nThis commit also includes fixes for several build errors related to module imports and TypeScript types.\n\nOriginal prompt: # v0.3 需求：支持工具\")"
     ],
     "deny": []
   }

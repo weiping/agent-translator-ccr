@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2025-07-07
+### Added
+- Implemented tool support for reading local files and fetching web content.
+- Created two new tools: `readFileTool` and `fetchUrlTool`.
+- Updated the chat component to handle tool calls and display tool results.
+- Enhanced the system prompt to make the AI aware of its new tool capabilities.
+
+### Fixed
+- Resolved build errors related to module imports and TypeScript types.
+- Corrected the property name for controlling tool execution loops in the AI SDK.
+
 ## [0.2.0] - 2025-07-07
 ### Added
 - Integrated with the Anthropic AI SDK to connect with a Large Language Model.

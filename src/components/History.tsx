@@ -3,7 +3,7 @@ import { Box, Text } from 'ink';
 
 interface Message {
     id: string;
-    role: 'user' | 'assistant';
+    role: 'user' | 'assistant' | 'tool';
     content: string;
 }
 
@@ -16,8 +16,14 @@ export const History: React.FC<HistoryProps> = ({ messages }) => {
         <Box flexDirection="column">
             {messages.map((message, index) => (
                 <Box key={message.id} marginY={1}>
-                    <Text color={message.role === 'user' ? 'green' : 'blue'}>
-                        {message.role === 'user' ? 'You: ' : 'AI: '}
+                    <Text color={
+                        message.role === 'user' ? 'green' :
+                        message.role === 'assistant' ? 'blue' : 'yellow'
+                    }>
+                        {
+                            message.role === 'user' ? 'You: ' :
+                            message.role === 'assistant' ? 'AI: ' : 'Tool: '
+                        }
                     </Text>
                     <Text>{message.content}</Text>
                 </Box>
