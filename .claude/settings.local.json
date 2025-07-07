@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir src)",
+      "Bash(npm init -y)",
+      "Bash(npm install react ink ai zod-to-json-schema)",
+      "Bash(npm install --save-dev typescript @types/react tsx)",
+      "Bash(npx tsc --init --rootDir src --outDir dist --esModuleInterop --resolveJsonModule --moduleResolution node --module commonjs --target es2020 --jsx react)",
+      "Bash(mkdir -p src/components src/hooks src/utils)",
+      "Bash(git init)",
+      "Bash(npm run dev)",
+      "Bash(git add .)",
+      "Bash(git commit -m \"feat: Initial project structure for Translator Agent\n\nInitializes the project with a basic structure, including TypeScript, React, Ink, and necessary configuration files. Sets up the development environment and a simple ''Welcome'' message UI.\n\nOriginal prompt: 请帮我初始化当前项目\")"
+    ],
+    "deny": []
+  }
+}

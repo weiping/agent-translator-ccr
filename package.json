@@ -1,0 +1,30 @@
+{
+  "name": "agent-translator-ccr",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/cli.js",
+  "bin": {
+    "translate": "dist/cli.js"
+  },
+  "scripts": {
+    "dev": "tsx src/cli.tsx",
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@types/react": "^19.1.8",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "ai": "^4.3.16",
+    "ink": "^6.0.1",
+    "react": "^19.1.0",
+    "zod-to-json-schema": "^3.24.6"
+  }
+}
