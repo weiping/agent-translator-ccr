@@ -9,11 +9,7 @@ import { streamText, CoreMessage } from 'ai';
 import { readFileTool } from '../tools/readFile.js';
 import { fetchUrlTool } from '../tools/fetchUrl.js';
 
-interface Message {
-    id: string;
-    role: 'user' | 'assistant' | 'tool';
-    content: string;
-}
+type Message = CoreMessage & { id: string };
 
 export const Chat = () => {
     const { isRawModeSupported } = useStdin();
@@ -29,56 +25,64 @@ export const Chat = () => {
 
     const handleSubmit = async (text: string) => {
         const newUserMessage: Message = { id: `msg-${messageCounter.current++}`, role: 'user', content: text };
-        
-        const updatedMessages = [...messages, newUserMessage];
-        setMessages(updatedMessages);
-        setStatus('AI is thinking...');
+        const newMessages = [...messages, newUserMessage];
+        setMessages(newMessages);
 
-        try {
-            const historyForSDK: CoreMessage[] = updatedMessages
-                .filter((msg): msg is Message & { role: 'user' | 'assistant' } => msg.role === 'user' || msg.role === 'assistant')
-                .map(({ role, content }) => ({ role, content }));
+        let currentMessages: CoreMessage[] = newMessages;
+        let hasToolCalls = true;
 
-            const result = await streamText({
-                model: getLanguageModel(),
-                system: 'You are a helpful chatbot. You can use tools to access local files and web pages.',
-                temperature: 0.1,
-                messages: historyForSDK,
-                tools: {
-                    readFile: readFileTool,
-                    fetchUrl: fetchUrlTool,
-                },
-            });
+        while (hasToolCalls) {
+            setStatus('AI is thinking...');
+            try {
+                const result = await streamText({
+                    model: getLanguageModel(),
+                    system: 'You are a helpful chatbot. You can use tools to access local files and web pages.',
+                    temperature: 0.1,
+                    messages: currentMessages,
+                    tools: {
+                        readFile: readFileTool,
+                        fetchUrl: fetchUrlTool,
+                    },
+                });
 
-            let fullResponse = '';
-            let toolMessages: Message[] = [];
-            
-            for await (const delta of result.fullStream) {
-                if (delta.type === 'text-delta') {
-                    fullResponse += delta.textDelta;
-                } else if (delta.type === 'tool-call') {
-                    setStatus(`Calling tool: ${delta.toolName} with args: ${JSON.stringify(delta.args)}`);
-                } else if (delta.type === 'tool-result') {
-                    const toolMessage: Message = {
-                        id: `msg-${messageCounter.current++}`,
-                        role: 'tool',
-                        content: `Tool '${delta.toolName}' Result: ${JSON.stringify(delta.result)}`,
-                    };
-                    toolMessages.push(toolMessage);
+                let fullResponse = '';
+                let toolMessages: Message[] = [];
+                hasToolCalls = false;
+
+                for await (const delta of result.fullStream) {
+                    if (delta.type === 'text-delta') {
+                        fullResponse += delta.textDelta;
+                    } else if (delta.type === 'tool-call') {
+                        setStatus(`Calling tool: ${delta.toolName} with args: ${JSON.stringify(delta.args)}`);
+                        hasToolCalls = true;
+                    } else if (delta.type === 'tool-result') {
+                        const toolMessage: Message = {
+                            id: `msg-${messageCounter.current++}`,
+                            role: 'tool',
+                            content: [{
+                                type: 'tool-result',
+                                toolCallId: delta.toolCallId,
+                                toolName: delta.toolName,
+                                result: delta.result,
+                            }],
+                        };
+                        toolMessages.push(toolMessage);
+                    }
                 }
+                
+                currentMessages = [...currentMessages, ...toolMessages];
+                setMessages(currentMessages as Message[]);
+                
+                if (fullResponse && !hasToolCalls) {
+                    const newAiMessage: Message = { id: `msg-${messageCounter.current++}`, role: 'assistant', content: fullResponse };
+                    setMessages(prev => [...prev, newAiMessage]);
+                }
+            } catch (error) {
+                setStatus(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+                hasToolCalls = false;
             }
-            
-            setMessages(prev => [...prev, ...toolMessages]);
-            
-            if (fullResponse) {
-                const newAiMessage: Message = { id: `msg-${messageCounter.current++}`, role: 'assistant', content: fullResponse };
-                setMessages(prev => [...prev, newAiMessage]);
-            }
-
-            setStatus('Ready.');
-        } catch (error) {
-            setStatus(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
+        setStatus('Ready.');
     };
 
     return (

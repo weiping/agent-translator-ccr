@@ -1,20 +1,16 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 
-interface Message {
-    id: string;
-    role: 'user' | 'assistant' | 'tool';
-    content: string;
-}
+import { CoreMessage } from 'ai';
 
 interface HistoryProps {
-    messages: Message[];
+    messages: (CoreMessage & { id: string })[];
 }
 
 export const History: React.FC<HistoryProps> = ({ messages }) => {
     return (
         <Box flexDirection="column">
-            {messages.map((message, index) => (
+            {messages.map(message => (
                 <Box key={message.id} marginY={1}>
                     <Text color={
                         message.role === 'user' ? 'green' :
@@ -25,7 +21,15 @@ export const History: React.FC<HistoryProps> = ({ messages }) => {
                             message.role === 'assistant' ? 'AI: ' : 'Tool: '
                         }
                     </Text>
-                    <Text>{message.content}</Text>
+                    <Text>{typeof message.content === 'string' 
+                        ? message.content 
+                        : message.content.map(part => {
+                            if (part.type === 'tool-result') {
+                                return JSON.stringify(part.result);
+                            }
+                            return '';
+                        }).join('')}
+                    </Text>
                 </Box>
             ))}
         </Box>
