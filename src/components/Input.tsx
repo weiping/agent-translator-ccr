@@ -17,11 +17,12 @@ export const Input: React.FC<InputProps> = ({ onSubmit }) => {
     };
 
     return (
-        <Box borderStyle="round" paddingX={1}>
+        <Box borderStyle="round" paddingX={1} borderColor="cyan">
             <Box marginRight={1}>
-                <Text>	</Text>
+                <Text>› </Text>
             </Box>
             <TextInput
+                placeholder="Type text to translate and press Enter"
                 value={value}
                 onChange={setValue}
                 onSubmit={handleSubmit}

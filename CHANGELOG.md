@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Improved the appearance of the text input box with a placeholder and colors.
+
+
 ## [0.4.0] - 2025-07-07
 ### Added
 - Implemented real-time status updates for tool calls using `streamText`.
